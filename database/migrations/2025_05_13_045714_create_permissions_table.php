@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tasks', function (Blueprint $table) {
-           
-            $table->foreignId('assigned_by')->nullable()->after('due_date')->constrained('users')->onDelete('cascade');
+        Schema::create('permissions', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');  
+            $table->string('slug')->unique();  // Slug for the permission (unique)
+            $table->timestamps(); 
+            
         });
     }
 
@@ -22,9 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tasks', function (Blueprint $table) {
-            $table->dropForeign(['assigned_by']);
-            $table->dropColumn('assigned_by');
-        });
+        Schema::dropIfExists('permissions');
     }
 };

@@ -6,7 +6,8 @@ use App\Http\Controllers\Admin\Auth\AdminRegisterController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\UserController;
-
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\RoleController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     // Authentication Routes
@@ -15,9 +16,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
 
     // Dashboard (protected by admin auth)
-    Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth:admin')->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth:admin','can:manage-dashboard'])->name('dashboard');
 
-    Route::prefix('tasks')->name('tasks.')->middleware('auth:admin')->group(function () {
+    Route::prefix('tasks')->name('tasks.')->middleware(['auth:admin', 'can:manage-tasks'])->group(function () {
         Route::get('/', [TaskController::class, 'index'])->name('index');
         Route::get('/create', [TaskController::class, 'create'])->name('create');
         Route::post('/store', [TaskController::class, 'store'])->name('store');
@@ -26,13 +27,32 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/delete/{id}', [TaskController::class, 'destroy'])->name('destroy');
     });
 
-    Route::prefix('users')->name('users.')->middleware('auth:admin')->group(function () {
+    Route::prefix('users')->name('users.')->middleware(['auth:admin', 'can:manage-users'])->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
         Route::get('/create', [UserController::class, 'create'])->name('create');
         Route::post('/store', [UserController::class, 'store'])->name('store');
         Route::get('edit/{id}', [UserController::class, 'edit'])->name('edit');
         Route::put('/update/{user}', [UserController::class, 'update'])->name('update'); 
         Route::delete('/delete/{id}', [UserController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('admins')->name('admins.')->middleware(['auth:admin','can:manage-admins'])->group(function () {
+        Route::get('/', [AdminController::class, 'index'])->name('index');
+        Route::get('/create', [AdminController::class, 'create'])->name('create');
+        Route::post('/store', [AdminController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [AdminController::class, 'edit'])->name('edit');
+        Route::put('/update/{admin}', [AdminController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [AdminController::class, 'destroy'])->name('destroy');
+    });
+
+
+    Route::prefix('roles')->name('roles.')->middleware(['auth:admin','can:manage-roles'])->group(function () {
+        Route::get('/', [RoleController::class, 'index'])->name('index');
+        Route::get('/create', [RoleController::class, 'create'])->name('create');
+        Route::post('/store', [RoleController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [RoleController::class, 'edit'])->name('edit');
+        Route::put('/update/{role}', [RoleController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [RoleController::class, 'destroy'])->name('destroy');
     });
 
 });

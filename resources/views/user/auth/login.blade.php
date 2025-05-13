@@ -19,14 +19,14 @@
                 @error('password') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
-            <div class="mb-4 flex items-center">
-                <input type="checkbox" name="remember" id="remember" class="mr-2">
-                <label for="remember">Remember Me</label>
-            </div>
+          
 
             <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
                 Login
             </button>
         </form>
+
+        <a href="{{ route('register') }}" class="text-blue-600 hover:underline mt-4 block">
+            Register Here!
     </div>
 @endsection

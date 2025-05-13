@@ -12,7 +12,7 @@ use App\Models\Task;
 class Admin extends Authenticatable
 {
     use HasFactory, Notifiable;
-
+    protected $with = ['role.permissions'];
     protected $fillable = [
         'name',
         'email',
@@ -30,4 +30,22 @@ class Admin extends Authenticatable
     {
         return $this->hasMany(Task::class, 'assigned_by');
     }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role && $this->role->is_super_admin === 1;
+    }
+
+
+    public function hasPermission(string $permissionSlug): bool
+    {
+        if (!$this->role) {
+        return false;
+    }
+
+     return $this->role->permissions->contains('slug', $permissionSlug);
+    }
+
+
+
 }

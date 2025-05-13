@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tasks', function (Blueprint $table) {
-           
-            $table->foreignId('assigned_by')->nullable()->after('due_date')->constrained('users')->onDelete('cascade');
+        Schema::table('roles', function (Blueprint $table) {
+            $table->boolean('is_super_admin')->default(false)->after('name');
         });
     }
 
@@ -22,9 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tasks', function (Blueprint $table) {
-            $table->dropForeign(['assigned_by']);
-            $table->dropColumn('assigned_by');
+        Schema::table('roles', function (Blueprint $table) {
+            $table->dropColumn('is_super_admin');
         });
     }
 };

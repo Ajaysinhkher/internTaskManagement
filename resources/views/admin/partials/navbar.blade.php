@@ -4,11 +4,25 @@
         <a href="{{ route('admin.dashboard') }}" class="font-bold text-xl">Admin Panel</a>
 
         <div class="flex space-x-6 items-center">
+            @can('manage-dashboard')
             <a href="{{ route('admin.dashboard') }}" class="hover:underline">Dashboard</a>
-            {{-- <a href="{{ route('admin.roles.index') }}" class="hover:underline">Manage Roles</a> --}}
-            {{-- <a href="{{ route('admin.admins.index') }}" class="hover:underline">Manage Admins</a> --}}
+            @endcan
+            
+            @can('manage-roles')
+            <a href="{{ route('admin.roles.index') }}" class="hover:underline">Manage Roles</a>
+            @endcan
+
+            @can('manage-admins')
+            <a href="{{ route('admin.admins.index') }}" class="hover:underline">Manage Admins</a>
+            @endcan
+
+            @can('manage-tasks')
             <a href="{{ route('admin.tasks.index') }}" class="hover:underline">Manage Tasks</a>
+            @endcan
+
+            @can('manage-users')
             <a href="{{ route('admin.users.index') }}" class="hover:underline">Manage Users</a>
+            @endcan
 
             {{-- <span class="ml-4">Welcome, {{ Auth::guard('admin')->user()->name }}</span> --}}
 
@@ -20,3 +34,8 @@
     </div>
 </nav>
 @endauth
+
+
+
+
+
