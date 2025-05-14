@@ -14,26 +14,29 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.admins.update', $admin->id) }}" method="POST" class="bg-white p-6 rounded-lg shadow-md space-y-6">
+    <form action="{{ route('admin.admins.update', $admin->id) }}" method="POST" id="editAdminForm" class="bg-white p-6 rounded-lg shadow-md space-y-6">
         @csrf
         @method('PUT')
 
         <div>
             <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
             <input type="text" name="name" id="name" value="{{ old('name', $admin->name) }}"
-                   class="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring focus:ring-blue-200 focus:outline-none">
+            class="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring focus:ring-blue-200 focus:outline-none">
+             @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
         <div>
             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input type="email" name="email" id="email" value="{{ old('email', $admin->email) }}"
                    class="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring focus:ring-blue-200 focus:outline-none">
+                    @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
         <div>
             <label for="password" class="block text-sm font-medium text-gray-700 mb-1">New Password <span class="text-xs text-gray-500">(leave blank to keep current)</span></label>
             <input type="password" name="password" id="password"
                    class="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring focus:ring-blue-200 focus:outline-none">
+                    @error('password') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
         <div>
@@ -51,6 +54,7 @@
                         {{ $role->name }}
                     </option>
                 @endforeach
+                 @error('role_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </select>
         </div>
 

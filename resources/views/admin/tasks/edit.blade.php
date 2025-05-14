@@ -10,13 +10,13 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('admin.tasks.update', $task->id) }}">
+    <form method="POST" action="{{ route('admin.tasks.update', $task->id) }}" id="editTaskForm">
         @csrf
         @method('PUT')
 
         <div class="mb-4">
             <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
-            <input type="text" name="title" id="title" value="{{ old('title', $task->title) }}" class="w-full mt-1 border rounded p-2" required>
+            <input type="text" name="title" id="title" value="{{ old('title', $task->title) }}" class="w-full mt-1 border rounded p-2" >
             @error('title')
                 <p class="text-red-600 text-sm">{{ $message }}</p>
             @enderror
@@ -24,7 +24,7 @@
 
         <div class="mb-4">
             <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-            <textarea name="description" id="description" rows="4" class="w-full mt-1 border rounded p-2" required>{{ old('description', $task->description) }}</textarea>
+            <textarea name="description" id="description" rows="4" class="w-full mt-1 border rounded p-2" >{{ old('description', $task->description) }}</textarea>
             @error('description')
                 <p class="text-red-600 text-sm">{{ $message }}</p>
             @enderror
@@ -32,7 +32,7 @@
 
         <div class="mb-4">
             <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-            <select name="status" id="status" class="w-full mt-1 border rounded p-2" required>
+            <select name="status" id="status" class="w-full mt-1 border rounded p-2" >
                 <option value="pending" {{ old('status', $task->status) == 'pending' ? 'selected' : '' }}>Pending</option>
                 <option value="in_progress" {{ old('status', $task->status) == 'in_progress' ? 'selected' : '' }}>In Progress</option>
                 <option value="completed" {{ old('status', $task->status) == 'completed' ? 'selected' : '' }}>Completed</option>
@@ -52,7 +52,7 @@
 
         <div class="mb-4">
             <label for="user_id" class="block text-sm font-medium text-gray-700">Assign to Users</label>
-            <select name="user_id[]" id="user_id" class="w-full mt-1 border rounded p-2" multiple required>
+            <select name="user_id[]" id="user_id" class="w-full mt-1 border rounded p-2" multiple >
                 <option value="">-- Select Users --</option>
                 @foreach($users as $user)
                     <option value="{{ $user->id }}" 
@@ -73,4 +73,58 @@
         </div>
     </form>
 </div>
+
+<script>
+    $(document).ready(function(){
+        $('#editTaskForm').validate({
+            rules: {
+                title: {
+                    required: true,
+                    minlength: 3
+                },
+                description: {
+                    required: true,
+                    minlength: 10
+                },
+                status: {
+                    required: true
+                },
+                due_date: {
+                    required: true,
+                    date: true
+                },
+                'user_id[]': {
+                    required: true
+                }
+            },
+            messages: {
+                title: {
+                    required: "Please enter a title.",
+                    minlength: "Title must be at least 3 characters long."
+                },
+                description: {
+                    required: "Please enter a description.",
+                    minlength: "Description must be at least 10 characters long."
+                },
+                status: {
+                    required: "Please select a status."
+                },
+                due_date: {
+                    required: "Please select a due date.",
+                    date: "Please enter a valid date."
+                },
+                'user_id[]': {
+                    required: "Please assign the task to at least one user."
+                },
+                errorElement: 'span',
+                errorClass: 'text-red-500 text-sm',
+                highlight: function (element) {
+                    $(element).addClass('border-red-500');
+                },
+                unhighlight: function (element) {
+                    $(element).removeClass('border-red-500');
+                }
+        });
+    })
+</script>
 @endsection
