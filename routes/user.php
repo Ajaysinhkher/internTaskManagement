@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\auth\UserLoginController;
-use App\Http\Controllers\auth\RegisterController;
+use App\Http\Controllers\User\auth\UserLoginController;
+use App\Http\Controllers\User\auth\RegisterController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\TaskController;
 

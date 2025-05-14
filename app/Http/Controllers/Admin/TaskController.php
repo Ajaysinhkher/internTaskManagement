@@ -35,8 +35,6 @@ class TaskController extends Controller
     public function store(Request $request)
     {
 
-        // dd(auth('admin')->check());
-        // dd(auth('admin')->id())
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -46,7 +44,6 @@ class TaskController extends Controller
             'user_id' => 'required|array', // Ensure user_id is an array
             'user_id.*' => 'exists:users,id',
             
-
         ]);
 
         try {
@@ -56,7 +53,7 @@ class TaskController extends Controller
                 'description' => $request->description,
                 'status' => $request->status,
                 'due_date' => $request->due_date,
-                'assigned_by' => auth('admin')->id(), // or auth('admin')->id() if you're using a separate guard
+                'assigned_by' => auth('admin')->id(), 
             ]);
             
 
@@ -83,7 +80,6 @@ class TaskController extends Controller
             return redirect()->back()->with('error', 'Error accessing task details: ' . $e->getMessage());
         }
     }
-
 
 
     public function destroy($id)
@@ -121,9 +117,6 @@ class TaskController extends Controller
             'user_id' => 'required|array', // Ensure user_id is an array
             'user_id.*' => 'exists:users,id',
         ]);
-
-       
-
 
         try {
             $task->update(['title' => $request->title,

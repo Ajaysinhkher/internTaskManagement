@@ -14,28 +14,41 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = Task::whereHas('users', function ($query) {
-            $query->where('users.id', Auth::id()); // 
-        })->with('assignedBy')->latest()->get();
-    
-        foreach ($tasks as $task) {
-            $task->assigned_by_admin = Admin::find($task->assigned_by); // Fetch the admin by the assigned_by ID
-        }
+
+        try{
+
+            $tasks = Task::whereHas('users', function ($query) {
+                $query->where('users.id', Auth::id()); // 
+            })->with('assignedBy')->latest()->get();
         
-        return view('user.tasks.index', compact('tasks'));
+            foreach ($tasks as $task) {
+                $task->assigned_by_admin = Admin::find($task->assigned_by); // Fetch the admin by the assigned_by ID
+            }
+            
+            return view('user.tasks.index', compact('tasks'));
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error loading tasks: ' . $e->getMessage());
+        }
     }
 
 
 
    public function show($id)
     {
-    $task = Task::whereHas('users', function ($query) {
-        $query->where('users.id', Auth::id());
-    })->with(['assignedBy', 'comments.commentable'])->findOrFail($id); 
 
-    $task->assigned_by_admin = Admin::find($task->assigned_by);
+        try{
 
-    return view('user.tasks.show', compact('task'));
+            $task = Task::whereHas('users', function ($query) {
+                $query->where('users.id', Auth::id());
+            })->with(['assignedBy', 'comments.commentable'])->findOrFail($id); 
+        
+            $task->assigned_by_admin = Admin::find($task->assigned_by);
+        
+            return view('user.tasks.show', compact('task'));
+
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error loading task: ' . $e->getMessage());
+        }
     }  
     
 }

@@ -12,15 +12,26 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $admins = Admin::all();
-      
-        return view('admin.admins.index',compact('admins'));
+
+        try{
+
+            $admins = Admin::all();
+            return view('admin.admins.index',compact('admins'));
+
+        }catch(\Exception $e){
+            return redirect()->back()->with('error', 'Something went wrong!');
+        }
     }
 
     public function create()
     {
-        $roles = Role::all();
-        return view('admin.admins.create',compact('roles'));
+        try{
+
+            $roles = Role::all();
+            return view('admin.admins.create',compact('roles'));
+        }catch(\Exception $e){
+            return redirect()->back()->with('error', 'Something went wrong!');
+        }
     }
 
     public function store(Request $request)
@@ -32,22 +43,35 @@ class AdminController extends Controller
             'role_id' => 'required|exists:roles,id',
         ]);
 
-        // Create a new admin
-        $admin = Admin::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'role_id' => $request->role_id,
-        ]);
 
-        return redirect()->route('admin.admins.index')->with('success', 'Admin created successfully.');
+        try{
+
+            // Create a new admin
+            $admin = Admin::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+                'role_id' => $request->role_id,
+            ]);
+    
+            return redirect()->route('admin.admins.index')->with('success', 'Admin created successfully.');
+        }catch(\Exception $e){
+            return redirect()->back()->with('error', 'Something went wrong!');
+        }
+
     }
 
     public function edit($id)
     {
-        $admin = Admin::findOrFail($id);
-        $roles = Role::all();
-        return view('admin.admins.edit', compact('id','admin','roles'));
+
+        try{
+
+            $admin = Admin::findOrFail($id);
+            $roles = Role::all();
+            return view('admin.admins.edit', compact('id','admin','roles'));
+        }catch(\Exception $e){
+            return redirect()->back()->with('error', 'Something went wrong!');
+        }
     }
 
     public function update(Request $request, $id)
@@ -59,24 +83,37 @@ class AdminController extends Controller
             'role_id' => 'required|exists:roles,id',
         ]);
 
-        $admin = Admin::findOrFail($id);
-        $admin->name = $request->name;
-        $admin->email = $request->email;
+        try{
 
-        if ($request->password) {
-            $admin->password = bcrypt($request->password);
+            $admin = Admin::findOrFail($id);
+            $admin->name = $request->name;
+            $admin->email = $request->email;
+    
+            if ($request->password) {
+                $admin->password = bcrypt($request->password);
+            }
+    
+            $admin->role_id = $request->role_id;
+            $admin->save();
+    
+            return redirect()->route('admin.admins.index')->with('success', 'Admin updated successfully.');
+        }catch(\Exception $e){
+            return redirect()->back()->with('error', 'Something went wrong!');
         }
 
-        $admin->role_id = $request->role_id;
-        $admin->save();
-
-        return redirect()->route('admin.admins.index')->with('success', 'Admin updated successfully.');
     }
 
     public function destroy($id)
     {
-        $admin = Admin::findOrFail($id);
-        
-        $admin->delete();
+
+        try{
+
+            $admin = Admin::findOrFail($id);
+            $admin->delete();
+             return redirect()->route('admin.admins.index')->with('success', 'Role deleted successfully.');
+
+        }catch(\Exception $e){
+            return redirect()->back()->with('error', 'Something went wrong!');
+        }
     }
 }

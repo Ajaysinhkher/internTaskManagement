@@ -12,6 +12,8 @@ class DashboardController extends Controller
 {
     public function index()
     {
+       
+        try{
         // Get counts for stats
         $totalUsers = User::count();
         $totalTasks = Task::count();
@@ -20,18 +22,13 @@ class DashboardController extends Controller
 
         // Get recent users with their tasks count
         $recentUsers = User::latest()->take(5)->get();
-         
+        
             
-
-        // dd($recentUsers);
-
         // Get recent tasks with their relationships
         $recentTasks = Task::with(['users'])
             ->latest()
             ->take(5)
             ->get();
-
-        // dd($recentTasks->toArray());
 
         return view('admin.dashboard', compact(
             'totalUsers',
@@ -41,5 +38,9 @@ class DashboardController extends Controller
             'recentUsers',
             'recentTasks'
         ));
+            
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error loading dashboard: ' . $e->getMessage());
+        }
     }
 }

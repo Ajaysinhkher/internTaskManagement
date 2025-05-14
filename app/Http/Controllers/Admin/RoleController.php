@@ -12,18 +12,30 @@ use Illuminate\Support\Str;
 
 class RoleController extends Controller
 {
+   
     public function index()
     {
-        // Fetch all roles from the database
-        $roles = Role::all();
-        return view('admin.roles.index',compact('roles'));
+
+        try{
+
+            // Fetch all roles from the database
+            $roles = Role::all();
+            return view('admin.roles.index',compact('roles'));
+
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error loading roles: ' . $e->getMessage());
+        }
     }
 
     public function create()
     {
-    
-        $permissions = Permission::all();
-        return view('admin.roles.create',compact('permissions'));
+        try{
+            
+            $permissions = Permission::all();
+            return view('admin.roles.create',compact('permissions'));
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error accessing create role page: ' . $e->getMessage());
+        }
     }
 
     public function store(Request $request)
@@ -35,25 +47,32 @@ class RoleController extends Controller
             'permissions' => 'array',
         ]);
 
-        // Create a new role  
-        $role = Role::create([
-            'name' => $request->name,
-            'slug'=> Str::slug($request->name),
-         
-            'is_super_admin' => $request->has('is_super_admin') && $request->is_super_admin == '1' ? true : false,
-        ]);
-        
-         // If super admin, assign all permissions
-        if ($role->is_super_admin) {
-            $allPermissionIds = Permission::pluck('id')->toArray();
-            $role->permissions()->sync($allPermissionIds);
-        }
-        // Otherwise, attach selected permissions
-        elseif ($request->permissions) {
-            $role->permissions()->sync($request->permissions);
+
+        try{
+
+            // Create a new role  
+            $role = Role::create([
+                'name' => $request->name,
+                'slug'=> Str::slug($request->name),
+             
+                'is_super_admin' => $request->has('is_super_admin') && $request->is_super_admin == '1' ? true : false,
+            ]);
+            
+             // If super admin, assign all permissions
+            if ($role->is_super_admin) {
+                $allPermissionIds = Permission::pluck('id')->toArray();
+                $role->permissions()->sync($allPermissionIds);
+            }
+            // Otherwise, attach selected permissions
+            elseif ($request->permissions) {
+                $role->permissions()->sync($request->permissions);
+            }
+            return redirect()->route('admin.roles.index')->with('success', 'Role created successfully.');
+            
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error creating role: ' . $e->getMessage());
         }
 
-        return redirect()->route('admin.roles.index')->with('success', 'Role created successfully.');
     }
 
     public function edit($id)
@@ -71,47 +90,60 @@ class RoleController extends Controller
             'permissions' => 'array',
         ]);
 
-        // Find the role by ID
-        $role = Role::findOrFail($id);
 
-        // Update the role
-        $role->update([
-            'name' => $request->name,
-            'slug'=> Str::slug($request->name),
-            'is_super_admin' => $request->has('is_super_admin') && $request->is_super_admin == '1' ? true : false,
-        ]);
-
-        // If super admin, assign all permissions
-        if ($role->is_super_admin) {
-            $allPermissionIds = Permission::pluck('id')->toArray();
-            $role->permissions()->sync($allPermissionIds);
-        }
-        // Otherwise, sync selected permissions
-        elseif ($request->permissions) {
-            $role->permissions()->sync($request->permissions);
-        }
-        // No permissions provided and not super admin: detach all
-        else {
-            $role->permissions()->detach();
-        }
-
-        return redirect()->route('admin.roles.index')->with('success', 'Role updated successfully.');
+        try{
+            // Find the role by ID
+            $role = Role::findOrFail($id);
+    
+            // Update the role
+            $role->update([
+                'name' => $request->name,
+                'slug'=> Str::slug($request->name),
+                'is_super_admin' => $request->has('is_super_admin') && $request->is_super_admin == '1' ? true : false,
+            ]);
+    
+            // If super admin, assign all permissions
+            if ($role->is_super_admin) {
+                $allPermissionIds = Permission::pluck('id')->toArray();
+                $role->permissions()->sync($allPermissionIds);
+            }
+            // Otherwise, sync selected permissions
+            elseif ($request->permissions) {
+                $role->permissions()->sync($request->permissions);
+            }
+            // No permissions provided and not super admin: detach all
+            else {
+                $role->permissions()->detach();
+            }
+    
+            return redirect()->route('admin.roles.index')->with('success', 'Role updated successfully.');
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error updating role: ' . $e->getMessage());
+        }   
     }
+
+
 
     public function destroy($id)
     {
-        // Find the role by ID
-        $role = Role::findOrFail($id);
 
-        // Check if the role is associated with any admins
-        if ($role->admins()->exists()) {
-            return redirect()->route('admin.roles.index')->with('error', 'Cannot delete this role as it is assigned to one or more admins.');
+        try{
+            // Find the role by ID
+            $role = Role::findOrFail($id);
+    
+            // Check if the role is associated with any admins
+            if ($role->admins()->exists()) {
+                return redirect()->route('admin.roles.index')->with('error', 'Cannot delete this role as it is assigned to one or more admins.');
+            }
+    
+            // Delete the role
+            $role->delete();
+    
+            return redirect()->route('admin.roles.index')->with('success', 'Role deleted successfully.');
+
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error deleting role: ' . $e->getMessage());
         }
-
-        // Delete the role
-        $role->delete();
-
-        return redirect()->route('admin.roles.index')->with('success', 'Role deleted successfully.');
     }
   
 }

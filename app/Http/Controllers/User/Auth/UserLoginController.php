@@ -1,35 +1,34 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Auth;
+namespace App\Http\Controllers\User\Auth;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class AdminLoginController extends Controller
+class UserLoginController extends Controller
 {
     public function index(){
-     
-        return view('admin.auth.login');
+        return view('user.auth.login');
     }
-
-
 
     public function login(Request $request){
         // Validate the request
-      $credentials =   $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required|min:6',
+            'password' => 'required'
         ]);
-          
+    
         try{
-
-            // Attempt to log the user in
-            if (Auth::guard('admin')->attempt($credentials)) {
-                // dd('auth');
+            // Attempt to login using Auth
+            if (Auth::attempt($credentials)) {
                 $request->session()->regenerate(); // prevent session fixation
-                return redirect()->intended('admin/dashboard'); // or route('dashboard')
+                return redirect()->intended('/dashboard'); // or route('dashboard')
             }
-             return redirect()->back()->withErrors(['email' => 'Invalid credentials'])->withInput();
+        
+            // If login failed
+            return back()->withErrors([
+                'email' => 'The provided credentials do not match our records.',
+            ])->onlyInput('email');
 
         }catch(\Exception $e){
             return redirect()->back()->withErrors(['email' => 'Invalid credentials'])->withInput();
@@ -37,15 +36,14 @@ class AdminLoginController extends Controller
     }
 
     public function logout(Request $request){
-
         try{
 
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-            return redirect('/admin')->with('success', 'Logged out successfully!');
+            return redirect('/')->with('success', 'Logged out successfully!');
         }catch(\Exception $e){
-            return redirect('/admin')->with('error', 'Something went wrong!');
+            return redirect('/')->with('error', 'Something went wrong!');
         }
     }
 }

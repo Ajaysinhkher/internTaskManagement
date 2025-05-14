@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\User\Auth;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
@@ -20,18 +20,20 @@ class RegisterController extends Controller
             'password' => 'required|min:6|confirmed',
         ]);
 
-
-
-        $user  = User::create([
-            'name'=>$request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+        try{
             
-        ]);
-
-        Auth::login($user);
-
-        return redirect()->route('dashboard')->with('success', 'Registration successful!');
-        
+            $user  = User::create([
+                'name'=>$request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                
+            ]);
+    
+            Auth::login($user);
+    
+            return redirect()->route('dashboard')->with('success', 'Registration successful!');
+        }catch(\Exception $e){
+            return redirect()->back()->with('error', 'Something went wrong!')->withInput();
+        } 
     }
 }

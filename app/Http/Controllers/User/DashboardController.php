@@ -10,8 +10,13 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // get only the authenticated user's tasks
-         $tasks = auth()->user()->tasks;
-        return view('user.dashboard',compact('tasks'));
+        try{
+            // get only the authenticated user's tasks
+             $tasks = auth()->user()->tasks;
+            return view('user.dashboard',compact('tasks'));
+
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error loading dashboard: ' . $e->getMessage());
+        }
     }
 }
