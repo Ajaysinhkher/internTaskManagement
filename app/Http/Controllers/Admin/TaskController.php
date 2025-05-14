@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Task;
 use App\Models\User;
 
@@ -71,14 +72,19 @@ class TaskController extends Controller
     
 
     // show tasks:
-    // public function show(Task $task)
-    // {
-    //     try {
-    //         return view('admin.tasks.show', compact('task'));
-    //     } catch (\Exception $e) {
-    //         return redirect()->back()->with('error', 'Error accessing task details: ' . $e->getMessage());
-    //     }
-    // }
+    public function show($id)
+    {
+        try {
+            $task = Task::with('comments')->findOrFail($id);
+
+            return view('admin.tasks.show', compact('task'));
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error accessing task details: ' . $e->getMessage());
+        }
+    }
+
+
 
     public function destroy($id)
     {

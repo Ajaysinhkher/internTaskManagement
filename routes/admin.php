@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\CommentController;
+
 
 Route::prefix('admin')->name('admin.')->group(function () {
     // Authentication Routes
@@ -25,6 +27,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/edit/{id}', [TaskController::class, 'edit'])->name('edit');
         Route::put('/update/{task}', [TaskController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [TaskController::class, 'destroy'])->name('destroy');
+        Route::get('/show/{id}', [TaskController::class, 'show'])->name('show');
     });
 
     Route::prefix('users')->name('users.')->middleware(['auth:admin', 'can:manage-users'])->group(function () {
@@ -54,5 +57,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/update/{role}', [RoleController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [RoleController::class, 'destroy'])->name('destroy');
     });
+
+
+   
+
+    Route::prefix('comments')->name('comments.')->middleware(['auth'])->group(function () {
+        Route::post('/store', [CommentController::class, 'store'])->name('store');
+    });
+
+   
+
 
 });

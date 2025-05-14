@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Task;
+use App\Models\Comment;
   
 class Admin extends Authenticatable
 {
@@ -46,6 +47,10 @@ class Admin extends Authenticatable
      return $this->role->permissions->contains('slug', $permissionSlug);
     }
 
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
 
 
 }

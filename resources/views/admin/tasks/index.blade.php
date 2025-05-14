@@ -36,6 +36,8 @@
                     @method('DELETE')
                     <button type="submit" onclick="return confirm('Are you sure?')" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</button>
                 </form>
+
+                <a href="{{ route('admin.tasks.show', $task->id) }}" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">View</a>
             </td>
         </tr>
         @empty

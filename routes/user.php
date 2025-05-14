@@ -18,3 +18,4 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('aut
 Route::post('/logout',[UserLoginController::class,'logout'])->middleware('auth')->name('logout');
 
 Route::get('/tasks',[TaskController::class,'index'])->middleware('auth')->name('tasks.index');
+Route::get('/tasks/show/{id}',[TaskController::class,'show'])->middleware('auth')->name('tasks.show');

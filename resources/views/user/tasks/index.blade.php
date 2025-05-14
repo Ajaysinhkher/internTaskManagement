@@ -16,6 +16,8 @@
                         <th class="px-4 py-3">Status</th>
                         <th class="px-4 py-3">Due Date</th>
                         <th class="px-4 py-3">Assigned By</th>
+                        <th class="px-4 py-3">Action</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -38,11 +40,19 @@
                             </td>
                             <td class="px-4 py-3">{{ \Carbon\Carbon::parse($task->due_date)->format('M d, Y') }}</td>
                             <td class="px-4 py-3">{{$task->assignedBy->name ?? 'Unknown'}}</td>
+                            <td class="px-4 py-3"><a href = "{{ route('tasks.show',$task->id) }} "> View Details </td>
+                    
+                      
+
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     @endif
+ 
+
 </div>
 @endsection
+
+

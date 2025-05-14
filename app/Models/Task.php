@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use App\Models\User;
 use App\Models\Admin;
-
+use App\Models\Comment;
 
 class Task extends Model
 {
@@ -36,5 +36,11 @@ class Task extends Model
     {
         return $this->belongsTo(Admin::class, 'assigned_by');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     
 }
