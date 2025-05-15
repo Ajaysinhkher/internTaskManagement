@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Task;
 use App\Models\Comment;
+use App\Models\Message;
   
 class Admin extends Authenticatable
 {
@@ -52,5 +53,14 @@ class Admin extends Authenticatable
         return $this->morphMany(Comment::class, 'commentable');
     }
 
+    public function sentMessages()
+    {
+        return $this->morphMany(Message::class, 'sender');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->morphMany(Message::class, 'receiver');
+    }
 
 }

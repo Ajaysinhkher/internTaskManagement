@@ -5,6 +5,7 @@ use App\Http\Controllers\User\auth\UserLoginController;
 use App\Http\Controllers\User\auth\RegisterController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\TaskController;
+use App\Http\Controllers\ChatController;
 
 
 Route::get('/',[UserLoginController::class,'index'])->name('login');
@@ -19,3 +20,9 @@ Route::post('/logout',[UserLoginController::class,'logout'])->middleware('auth')
 
 Route::get('/tasks',[TaskController::class,'index'])->middleware('auth')->name('tasks.index');
 Route::get('/tasks/show/{id}',[TaskController::class,'show'])->middleware('auth')->name('tasks.show');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/{admin}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/{admin}', [ChatController::class, 'store'])->name('chat.store');
+});

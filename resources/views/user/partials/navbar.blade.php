@@ -9,7 +9,7 @@
         <div class="space-x-6 text-gray-700 font-medium">
             <a href="{{ route('dashboard') }}" class="hover:text-blue-600">Dashboard</a>
             <a href="{{ route('tasks.index') }}" class="hover:text-blue-600">Tasks</a>
-            {{-- <a href="{{ route('chat.index') }}" class="hover:text-blue-600">Chat</a> --}}
+            <a href="{{ route('chat.index') }}" class="hover:text-blue-600">Chat</a>
           
         </div>
 

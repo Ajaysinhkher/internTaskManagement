@@ -24,6 +24,8 @@
             <a href="{{ route('admin.users.index') }}" class="hover:underline">Manage Users</a>
             @endcan
 
+             <a href="{{ route('admin.chat.index') }}" class="hover:underline">Chat</a>
+
             {{-- <span class="ml-4">Welcome, {{ Auth::guard('admin')->user()->name }}</span> --}}
 
             <form method="POST" action="{{ route('admin.logout') }}" class="inline ml-4">

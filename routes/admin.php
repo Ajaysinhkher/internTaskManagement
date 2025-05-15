@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\ChatController;
 
 
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -65,7 +66,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/store', [CommentController::class, 'store'])->name('store');
     });
 
-   
-
+    Route::prefix('chat')->name('chat.')->middleware(['auth:admin'])->group(function () {
+        Route::get('/', [ChatController::class, 'index'])->name('index');
+        Route::get('/{admin}', [ChatController::class, 'show'])->name('show');
+        Route::post('/{admin}/store', [ChatController::class, 'store'])->name('store');
+});
 
 });

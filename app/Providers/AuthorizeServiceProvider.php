@@ -23,17 +23,17 @@ class AuthorizeServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Log initialization
-        Log::info("AuthorizeProvider boot method initialized.");
+        // // Log initialization
+        // Log::info("AuthorizeProvider boot method initialized.");
     
 
        Gate::before(function ($user, $permission) {
     // Only run this logic for Admins
     if ($user instanceof \App\Models\Admin) {
-        Log::info("Checking permission for admin: {$user->id}, permission: {$permission}");
+        // Log::info("Checking permission for admin: {$user->id}, permission: {$permission}");
 
         if ($user->isSuperAdmin()) {
-            Log::info("Admin {$user->id} is super admin. Granting all permissions.");
+            // Log::info("Admin {$user->id} is super admin. Granting all permissions.");
             return true;
         }
 
