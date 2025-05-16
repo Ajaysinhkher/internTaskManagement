@@ -44,6 +44,7 @@ class AdminLoginController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
             return redirect('/admin')->with('success', 'Logged out successfully!');
+            
         }catch(\Exception $e){
             return redirect('/admin')->with('error', 'Something went wrong!');
         }

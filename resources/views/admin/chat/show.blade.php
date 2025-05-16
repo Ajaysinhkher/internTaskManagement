@@ -47,33 +47,35 @@
 
 
 
-    $(function() {
+    $(document).ready(function() {
         const receiverType = "{{ class_basename(get_class(auth('admin')->user())) }}"; // Admin
-        const receiverId = {{ auth('admin')->id() }};
-        const chatChannel = `chat.${receiverType}.${receiverId}`;
-        console.log("Chat Channel:", chatChannel);
+        const senderId = {{ auth('admin')->id() }};
+        const receiverId = {{ $user->id }}
+        const chatChannel = `chat.${Math.min(senderId, receiverId)}.${Math.max(senderId, receiverId)}`;
+        console.log('channel name: ', chatChannel);
 
         // Laravel Echo listener
         window.Echo.channel(chatChannel)
-            .listen('.MessageSent', (e) => {
-                const container = document.getElementById('chat-messages');
-                const isAdmin = e.sender_id === receiverId && e.sender_type === receiverType;
+        .listen('MessageSent', (e) => {
+            console.log('Message received:', e);
+            const container = document.getElementById('chat-messages');
+            const isAdmin = e.sender_id === senderId && e.sender_type === 'Admin';
 
-                const messageHTML = `
-                    <div class="mb-3 flex ${isAdmin ? 'justify-end' : 'justify-start'}">
-                        <div class="max-w-xs px-4 py-2 rounded-lg ${isAdmin ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'}">
-                            <p class="mb-1 text-sm leading-snug">
-                                <strong class="font-semibold">${e.sender_type}:</strong>
-                                <span>${e.message}</span>
-                            </p>
-                            <small class="text-[10px] block text-right text-gray-300">${new Date(e.created_at).toLocaleString()}</small>
-                        </div>
+            const messageHTML = `
+                <div class="mb-3 flex ${isAdmin ? 'justify-end' : 'justify-start'}">
+                    <div class="max-w-xs px-4 py-2 rounded-lg ${isAdmin ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'}">
+                        <p class="mb-1 text-sm leading-snug">
+                            <strong class="font-semibold">${e.sender_type}:</strong>
+                            <span>${e.message}</span>
+                        </p>
+                        <small class="text-[10px] block text-right text-gray-300">${new Date(e.created_at).toLocaleString()}</small>
                     </div>
-                `;
+                </div>
+            `;
 
-                container.innerHTML += messageHTML;
-                container.scrollTop = container.scrollHeight;
-            });
+            container.innerHTML += messageHTML;
+            container.scrollTop = container.scrollHeight;
+        });
 
         // jQuery AJAX form submission
             $('#chat-form').on('submit', function(e) {

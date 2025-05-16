@@ -8,11 +8,11 @@ use App\Http\Controllers\User\TaskController;
 use App\Http\Controllers\ChatController;
 
 
-Route::get('/',[UserLoginController::class,'index'])->name('login');
-Route::get('/register',[RegisterController::class,'index'])->name('register');
+Route::get('/',[UserLoginController::class,'index'])->middleware('guest')->name('login');
+Route::get('/register',[RegisterController::class,'index'])->middleware('guest')->name('register');
 
-Route::post('/',[UserLoginController::class,'login'])->name('login.post');
-Route::post('/register',[RegisterController::class,'register'])->name('register.post');
+Route::post('/',[UserLoginController::class,'login'])->middleware('guest')->name('login.post');
+Route::post('/register',[RegisterController::class,'register'])->middleware('guest')->name('register.post');
 
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
